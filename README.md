@@ -1,2 +1,2 @@
 # blazor-frontend
-Aquí esta en Diseño de AppWASGithub
+Aquí esta el Diseño de AppWASGithub
