@@ -1,35 +1,37 @@
 name: Deploy to GitHub Pages
 
 on:
-  push:  
+  push:
     branches:
       - main
 
 jobs:
   build:
-    runs-on: ubuntu-latest  
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository  
-        uses: actions/checkout@v2  
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - name: Setup .NET Core  
-        uses: actions/setup-dotnet@v1  
+      - name: Change to project directory
+        run: cd C:/Aplicada-I/AppWASGithub/blazor-frontend/BlazorFrontend/BlazorFrontend
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '8.0.x'  
+          dotnet-version: '6.0.x'
 
-      - name: Install dependencies  s
-        run: dotnet restore 
+      - name: Install dependencies
+        run: dotnet restore
 
-      - name: Build the project  
-        run: dotnet build --configuration Release  
+      - name: Build the project
+        run: dotnet build --configuration Release
 
-      - name: Publish the project  
-        run: dotnet publish -c Release -o output  
+      - name: Publish the project
+        run: dotnet publish -c Release -o output
 
-      - name: Deploy to GitHub Pages  
-        uses: peaceiris/actions-gh-pages@v3  
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.MYSECRET }} 
-          publish_dir: ./output/wwwroot  
-
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./output/wwwroot
