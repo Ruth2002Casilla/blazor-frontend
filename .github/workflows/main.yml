@@ -1,9 +1,9 @@
-name: Deploy to GitHub Pages
+name: Deploy Blazor WebAssembly to GitHub Pages
 
 on:
   push:
     branches:
-      - main
+      - main  
 
 jobs:
   build:
@@ -13,29 +13,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Display repository contents
-        run: ls -R 
-
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+      - name: Publish application
+        run: dotnet publish -c Release
+    
+      - name: Rewrite base href
+        if: success()
+        uses: SteveSandersonMS/ghaction-rewrite-base-href@v1
         with:
-          dotnet-version: '8.0.x'  
+          html_path: ${{ env.PUBLISH_DIR }}/index.html
+          base_href: "/BlazorFrontend/"
 
-      - name: Change to project directory
-        run: |
-          cd $GITHUB_WORKSPACE
-          cd C:\Aplicada-I\AppWASGithub\blazor-frontend\BlazorFrontend\BlazorFrontend  
-      - name: Install dependencies
-        run: dotnet restore pC:\Aplicada-I\AppWASGithub\blazor-frontend\BlazorFrontend\BlazorFrontend  
+      - name: Add .nojekyll file
+        run: touch ${{ env.PUBLISH_DIR }}/.nojekyll
 
-      - name: Build the project
-        run: dotnet build --configuration Release
-
-      - name: Publish the project
-        run: dotnet publish -c Release -o output
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Commit to GitHub Pages Repo
+        if: success()
+        uses: crazy-max/ghaction-github-pages@v1.5.1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./output/wwwroot
+          target_branch: gh-pages
+          build_dir: ${{ env.PUBLISH_DIR }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+env:
+  PUBLISH_DIR: bin/Debug/net8.0/  
