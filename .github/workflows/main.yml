@@ -13,13 +13,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Change to project directory
-        run: cd C:/Aplicada-I/AppWASGithub/blazor-frontend/BlazorFrontend/BlazorFrontend
+      - name: Display repository contents
+        run: ls -R  
 
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '6.0.x'
+
+      - name: Change to project directory
+        run: cd $GITHUB_WORKSPACE
 
       - name: Install dependencies
         run: dotnet restore
